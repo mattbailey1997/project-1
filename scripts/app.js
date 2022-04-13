@@ -7,6 +7,10 @@ function init() {
   const cellCount = width * width
   const cells = []
 
+  // function play(){
+  //   var audio = new Audio('retro-forest.mp3')
+  //   audio.play();
+  // }
   // Creating grid function
   function createGrid(){
     
@@ -64,6 +68,7 @@ function init() {
 
     // check if snake is moving off grid
 
+    //make these all one if with || between them
     if (snakeDirection === 1 && snake[0] % width === (width - 1) ){
       // restartGame = true
       gameOver()
@@ -127,11 +132,13 @@ function init() {
     // console.log(applePosition)
     // console.log(snake[0])
 
+    // put this in its own method called 'eatApple'
     if ( applePosition === snake[0]){
       speedUp()
       grow(tail)
       addApple()
     }
+    // call eatApple
     
 
 
@@ -167,6 +174,10 @@ function init() {
     snake.forEach((index) => cells[index].classList.remove(snakeClass))
     window.alert('You Lost! Press Ok if you want to play again?')
     window.location.reload()
+    
+    
+    
+    
     // startGame()
 
     
@@ -177,7 +188,7 @@ function init() {
   function speedUp(){
     console.log('speed up')
     clearInterval(myInterval)
-    snakeSpeed = snakeSpeed * 0.8
+    snakeSpeed = snakeSpeed * 0.9
     myInterval = setInterval(moveSnake, snakeSpeed)
 
   }
