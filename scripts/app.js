@@ -6,6 +6,7 @@ function init() {
   const width = 20
   const cellCount = width * width
   const cells = []
+
   // Creating grid function
   function createGrid(){
     
@@ -21,6 +22,7 @@ function init() {
 
     }
 
+    snake.forEach((index) => cells[index].classList.add(snakeClass))
   }
 
   // Apple variables
@@ -45,69 +47,80 @@ function init() {
   const snakeClass = 'snake'
   let snakeDirection = 1
   let snakeSpeed = 500
-  const snake = [2,1,0]
-  snake.push( 0 )
-  let newSnake = -1
+  const snake = [2, 1, 0]
+  // snake.push( 0 )
+
 
   // Moves snake
   function moveSnake(){
     //console.log('move')
-    let restartGame = false
+    // let restartGame = false
+    let tail 
     
 
     //console.log( snake[0] )
-    cells[snake[0]].classList.remove(snakeClass)
+    // cells[snake[0]].classList.remove(snakeClass)
     //cells[snake[0]].classList.remove(snakeClass)
 
     // check if snake is moving off grid
 
     if (snakeDirection === 1 && snake[0] % width === (width - 1) ){
-      restartGame = true
-      console.log('snake went off right')
-    } else if (snakeDirection === 3 && snake[0] % width === 0) {
-      restartGame = true
-      console.log('snake went off left')
-    } else if (snakeDirection === 2 && snake[0] >= 380) {
-      restartGame = true
-      console.log('snake went off bottom')
-    } else if (snakeDirection === 4 && snake[0] <= 19) {
-      restartGame = true
-      console.log('snake went off top')
-    }
-    
-    
-    //find new position
-    if ( restartGame === false ){
-      //console.log('updating position')
-      if (snakeDirection === 1){
-        // const tail = snake.pop()
-        // cells[tail].classList.remove(snakeClass)
-        // snake.unshift(snake[0]) 
-        snake[0] ++
-        // cells[snake[0]].classList.add(snakeClass)
-      
-        // change this to shift to add a new cell at the front and pop at the bacj, will still be ++
-
-      } else if (snakeDirection === 3) {
-        // const tail = snake.pop()
-        // cells[tail].classList.remove(snakeClass)
-        // snake.unshift(snake[0]) 
-        snake[0] --
-        // cells[snake[0]].classList.add(snakeClass)
-      } else if (snakeDirection === 4) {
-        snake[0] -= width
-      } else if (snakeDirection === 2) {
-        snake[0] += width
-      } else {
-        console.log('Invalid Direction')
-      }
-      
-      cells[snake[0]].classList.add(snakeClass)
-      //cells[snake[0]].classList.add(snakeClass) use something similiar to remove old snake position
-    } else {
+      // restartGame = true
       gameOver()
-
+      console.log('snake went off right')
+    } else if (snakeDirection === -1 && snake[0] % width === 0) {
+      // restartGame = true
+      gameOver()
+      console.log('snake went off left')
+    } else if (snakeDirection === +width && snake[0] >= 380) {
+      // restartGame = true
+      gameOver()
+      console.log('snake went off bottom')
+    } else if (snakeDirection === -width && snake[0] <= 19) {
+      // restartGame = true
+      gameOver()
+      console.log('snake went off top')
+    } else if (cells[snake[0] + snakeDirection].classList.contains(snakeClass)) {
+      // restartGame = true
+      gameOver()
+    } else {
+    
+      tail = snake.pop()
+      cells[tail].classList.remove(snakeClass)
+      snake.unshift(snake[0] + snakeDirection)
+      cells[snake[0]].classList.add(snakeClass)
+      
     }
+    // //find new position
+    // if ( restartGame === false ){
+    //   //console.log('updating position')
+    //   if (snakeDirection === 1){
+    //     snake[0] ++
+    //     console.log(snakeDirection)
+    //     // cells[snake[0]].classList.add(snakeClass)
+    //     // change this to shift to add a new cell at the front and pop at the bacj, will still be ++
+
+    //   } else if (snakeDirection === 3) {
+    //     // const tail = snake.pop()
+    //     // cells[tail].classList.remove(snakeClass)
+    //     // snake.unshift(snake[0]) 
+    //     snake[0] --
+    //     console.log(snakeDirection)
+    //     // cells[snake[0]].classList.add(snakeClass)
+    //   } else if (snakeDirection === 4) {
+    //     snake[0] -= width
+    //   } else if (snakeDirection === 2) {
+    //     snake[0] += width
+    //   } else {
+    //     console.log('Invalid Direction')
+    //   }
+      
+    //   cells[snake[0]].classList.add(snakeClass)
+    //   //cells[snake[0]].classList.add(snakeClass) use something similiar to remove old snake position
+    // } else {
+    //   gameOver()
+
+    // }
 
 
     //snake eats apple
@@ -116,7 +129,7 @@ function init() {
 
     if ( applePosition === snake[0]){
       speedUp()
-      grow()
+      grow(tail)
       addApple()
     }
     
@@ -134,13 +147,13 @@ function init() {
 
     //console.log(snake[0] % width)
     if (key === right){
-      snakeDirection = 1
+      snakeDirection = +1  //+1 will add the to the cell on the right with the snake class
     } else if (key === left) {
-      snakeDirection = 3
+      snakeDirection = -1
     } else if (key === up) {
-      snakeDirection = 4
+      snakeDirection = -width
     } else if (key === down) {
-      snakeDirection = 2
+      snakeDirection = +width
     } else {
       console.log('Invalid Key')
     }
@@ -150,6 +163,13 @@ function init() {
   function gameOver(){
     console.log('game over')
     clearInterval(myInterval)
+    console.log(snake)
+    snake.forEach((index) => cells[index].classList.remove(snakeClass))
+    window.alert('You Lost! Press Ok if you want to play again?')
+    window.location.reload()
+    // startGame()
+
+    
     //window.alert('Game over')
 
   }
@@ -157,51 +177,60 @@ function init() {
   function speedUp(){
     console.log('speed up')
     clearInterval(myInterval)
-    snakeSpeed = snakeSpeed * 0.9
+    snakeSpeed = snakeSpeed * 0.8
     myInterval = setInterval(moveSnake, snakeSpeed)
 
   }
 
 
   //Growing if apple is eaten
-  function grow(){
-    console.log('grow')
+  function grow(tail){
+    snake.push(tail)
+    cells[tail].classList.add(snakeClass)
+    // console.log('grow')
   
-    if (snakeDirection === 1){
-      newSnake = snake[0] - 1
-      console.log(newSnake)
-    } else if (snakeDirection === 3) {
-      newSnake = snake[0] + 1
-    } else if (snakeDirection === 4) {
-      newSnake = snake[0] -= width
-    } else if (snakeDirection === 2) {
-      newSnake = snake[0] += width
-    } else {
-      console.log('Invalid Direction')
-    }
-    snake.push( newSnake )
-    
+    // if (snakeDirection === 1){
+    //   newSnake = snake[0] - 1
+    //   console.log(newSnake)
+    // } else if (snakeDirection === 3) {
+    //   newSnake = snake[0] + 1
+    // } else if (snakeDirection === 4) {
+    //   newSnake = snake[0] -= width
+    // } else if (snakeDirection === 2) {
+    //   newSnake = snake[0] += width
+    // } else {
+    //   console.log('Invalid Direction')
+    // }
+    // snake.push( newSnake 
+  
 
-    console.log( snake.length )
-    console.log( snake[(snake.length) - 1 ] )
-    cells[snake[ snake.length - 1 ]].classList.add(snakeClass) //Removing tth
+    // console.log( snake.length )
+    // console.log( snake[(snake.length) - 1 ] )
+    // cells[snake[ snake.length - 1 ]].classList.add(snakeClass) //Removing tth
+
+
+  }
+
+  function startGame(){
+    createGrid()
+
+    //place apple and snake on screen
+    cells[snake[0]].classList.add(snakeClass)
+    // cells[snake[0]].classList.add(snakeClass)
+
+    addApple()
+
+    moveSnake()
+
 
 
   }
 
 
-
-
   // SNAKE MOVES CHANGED 33 32 31, Length 
 
-  
-  createGrid()
 
-  //place apple and snake on screen
-  cells[snake[0]].classList.add(snakeClass)
-  // cells[snake[0]].classList.add(snakeClass)
-
-  addApple()
+  startGame()
 
   var myInterval = setInterval(moveSnake, snakeSpeed)
 

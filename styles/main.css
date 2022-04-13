@@ -2,9 +2,16 @@
   box-sizing: border-box;
 }
 
+h1 {
+  color: white;
+  text-align: center;
+  font-family: 'Aldrich', sans-serif;
+}
+
 body {
   height: 100vh;
   margin: 0;
+  /* background-image: url(https://thumbs.dreamstime.com/b/green-snake-skin-as-background-reptile-green-snake-skin-as-background-reptile-176521874.jpg);  */
 }
 
 .grid-container {
@@ -26,17 +33,18 @@ body {
 }
 
 #grid div {
-  border: 0.1px solid lightgrey;
+  border: 0.1px solid lightgray;
   flex-grow: 1;
   height: 5%;
   width: 5%;
   margin: 0;
+  background-color: white;
 }
 
 #grid div.apple {
   background-color: red;
+  
 }
-
 #grid div.snake {
   background-color: green;
 }
